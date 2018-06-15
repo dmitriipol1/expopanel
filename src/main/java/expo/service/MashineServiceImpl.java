@@ -11,8 +11,13 @@ import java.util.stream.Collectors;
 @Service
 public class MashineServiceImpl implements MashineService {
 
-    @Autowired
+    private final
     MashineDaoImpl mashineDao;
+
+    @Autowired
+    public MashineServiceImpl(MashineDaoImpl mashineDao) {
+        this.mashineDao = mashineDao;
+    }
 
     public List<Mashine> getAllMashines(boolean showOnline) {
         if (showOnline) {

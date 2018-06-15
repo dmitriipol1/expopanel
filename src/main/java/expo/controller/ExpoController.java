@@ -16,14 +16,16 @@ public class ExpoController {
     private Mashine target = new Mashine("region");
     private boolean showOnlyOnline = false;
 
-    @Autowired
-    private MashineServiceImpl mashineService;
+    private final MashineServiceImpl mashineService;
 
-    private List<Mashine> mashinesList;
+    @Autowired
+    public ExpoController(MashineServiceImpl mashineService) {
+        this.mashineService = mashineService;
+    }
 
     @RequestMapping(value = {"getAllMashines", "/"})
     public ModelAndView getAllMashines(Model model) {
-        mashinesList = mashineService.getAllMashines(showOnlyOnline);
+        List<Mashine> mashinesList = mashineService.getAllMashines(showOnlyOnline);
         model.addAttribute("target", target.getName());
         return new ModelAndView("index", "mashinesList", mashinesList);
     }

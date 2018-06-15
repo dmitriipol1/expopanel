@@ -5,9 +5,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.Inet4Address;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,7 +26,7 @@ public class MashineDaoImpl implements MashineDao {
             try {
                 InetAddress ip = InetAddress.getByName(m.getName());
                 m.setOnline(ip.isReachable(100));
-            } catch (IOException e) {
+            } catch (IOException ignored) {
             }
         });
         return list;

@@ -8,8 +8,8 @@ import java.util.List;
 
 public interface MashineDao {
 
-    public boolean uploadDir(Mashine mashine, File path);
-    public boolean clearDir(Mashine mashine, File path);
-    public List<Mashine> pingList(List<Mashine> list);
-    public List<Mashine> getAllMashines();
+    boolean uploadDir(Mashine mashine, File path);
+    boolean clearDir(Mashine mashine, File path);
+    List<Mashine> pingList(List<Mashine> list);
+    List<Mashine> getAllMashines();
 }
