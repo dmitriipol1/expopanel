@@ -3,9 +3,9 @@ package expo.dao;
 import expo.model.Mashine;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.InetAddress;
+import java.nio.channels.FileChannel;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,6 +20,42 @@ public class MashineDaoImpl implements MashineDao {
     public boolean clearDir(Mashine mashine, File path) {
         return false;
     }
+
+    public boolean backupLayoutJSON(Mashine target, List<Mashine> serverList) {
+        final boolean[] error = {false};
+
+        serverList.forEach(s -> {
+            File source = new File("//" + s + "/Expo//modules/_layout.json");
+            File dest = new File("D:/ExpoBackup/" + s + "/_layout.json");
+            if (source.exists()) {
+                if (!dest.exists()) {
+                    try {
+                        dest.getParentFile().mkdirs();
+                        dest.createNewFile();
+                    } catch (IOException e) {
+                        error[0] = true;
+                    }
+                }
+                try {
+                    copyFileUsingChannel(source, dest);
+                } catch (IOException e) {
+                    error[0] = true;
+                }
+            }
+        });
+        return error[0];
+    }
+
+
+    private static void copyFileUsingChannel(File source, File dest) throws IOException {
+        try (FileChannel sourceChannel = new FileInputStream(source).getChannel();
+             FileChannel destChannel = new FileOutputStream(dest).getChannel()) {
+            destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
+        } finally {
+            System.out.println(source + " - OK");
+        }
+    }
+
 
     public List<Mashine> pingList(List<Mashine> list) {
         list.forEach(m -> {
