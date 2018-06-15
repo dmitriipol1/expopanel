@@ -16,7 +16,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=2">
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-    <title>Expo target change</title>
+    <title>Expo add new server</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
@@ -26,14 +26,14 @@
     <div class="panel panel-success">
         <div class="panel-heading">
             <h3 class="panel-title">
-                <div align="left"><b>Источник контента</b></div>
+                <div align="left"><b>Добавим еще сервер</b></div>
                 <div></div>
                 <div align="right"><a href="/">Назад</a></div>
             </h3>
         </div>
         <div class="panel-body">
-            <form:form id="bookRegisterForm" cssClass="form-horizontal" modelAttribute="target" method="post"
-                       action="saveTarget">
+            <form:form id="bookRegisterForm" cssClass="form-horizontal" modelAttribute="server" method="post"
+                       action="saveNewServer">
 
                 <div class="form-group">
                     <div class="control-label col-xs-3"><form:label path="name">Name</form:label></div>
@@ -43,11 +43,18 @@
                 </div>
 
                 <div class="form-group">
+                    <div class="control-label col-xs-3"><form:label path="kinect">Kinect?</form:label></div>
+                    <div class="col-xs-6">
+                        <form:checkbox cssClass="form-control" path="kinect" value="false"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <div class="row">
                         <div class="col-xs-4">
                         </div>
                         <div class="col-xs-4">
-                            <input type="submit" id="saveTarget" class="btn btn-primary" value="Save"/>
+                            <input type="submit" id="saveNewServer" class="btn btn-primary" value="Save"/>
                         </div>
                         <div class="col-xs-4">
                         </div>

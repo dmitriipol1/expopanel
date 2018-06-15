@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import expo.service.MashineServiceImpl;
 
@@ -13,8 +15,9 @@ import java.util.List;
 
 @Controller
 public class ExpoController {
-    private Mashine target = new Mashine("region");
+    private Mashine target = new Mashine("localhost");
     private boolean showOnlyOnline = false;
+    private List<Mashine> mashinesList;
 
     private final MashineServiceImpl mashineService;
 
@@ -25,25 +28,65 @@ public class ExpoController {
 
     @RequestMapping(value = {"getAllMashines", "/"})
     public ModelAndView getAllMashines(Model model) {
-        List<Mashine> mashinesList = mashineService.getAllMashines(showOnlyOnline);
+        mashinesList = mashineService.getAllMashines(showOnlyOnline);
         model.addAttribute("target", target.getName());
         return new ModelAndView("index", "mashinesList", mashinesList);
     }
 
     @RequestMapping("changeTarget")
-    public ModelAndView createBook(@ModelAttribute Mashine target) {
+    public ModelAndView changeTarget(@ModelAttribute Mashine target) {
         return new ModelAndView("targetForm", "target", target);
     }
 
     @RequestMapping("saveTarget")
-    public ModelAndView saveBook(@ModelAttribute Mashine target) {
+    public ModelAndView saveTarget(@ModelAttribute Mashine target) {
         this.target = target;
+        return new ModelAndView("redirect:/");
+    }
+
+    @RequestMapping("addNewServer")
+    public ModelAndView addNewServer() {
+        return new ModelAndView("serverForm", "server", new Mashine());
+    }
+
+    @RequestMapping("saveNewServer")
+    public ModelAndView saveNewServer(@ModelAttribute Mashine server, @RequestParam(required = false) boolean kinect) {
+        server.setKinect(kinect);
+        mashineService.addNewServer(server);
         return new ModelAndView("redirect:/");
     }
 
     @RequestMapping("showOnline")
     public ModelAndView showOnline() {
         showOnlyOnline = !showOnlyOnline;
+        return new ModelAndView("redirect:/");
+    }
+
+    @RequestMapping("uploadModules")
+    public ModelAndView uploadModules(@RequestParam String name) {
+        Mashine server = mashinesList.stream().filter(m -> m.getName().equals(name)).findFirst().get();
+        mashineService.uploadModules(target, server);
+        return new ModelAndView("redirect:/");
+    }
+
+    @RequestMapping("uploadContent")
+    public ModelAndView uploadContent(@RequestParam String name) {
+        Mashine server = mashinesList.stream().filter(m -> m.getName().equals(name)).findFirst().get();
+        mashineService.uploadContent(target, server);
+        return new ModelAndView("redirect:/");
+    }
+
+    @RequestMapping("uploadVVVV")
+    public ModelAndView uploadVVVV(@RequestParam String name) {
+        Mashine server = mashinesList.stream().filter(m -> m.getName().equals(name)).findFirst().get();
+        mashineService.uploadVVVV(target, server);
+        return new ModelAndView("redirect:/");
+    }
+
+    @RequestMapping("uploadAll")
+    public ModelAndView uploadAll(@RequestParam String name) {
+        Mashine server = mashinesList.stream().filter(m -> m.getName().equals(name)).findFirst().get();
+        mashineService.uploadAll(target, server);
         return new ModelAndView("redirect:/");
     }
 //

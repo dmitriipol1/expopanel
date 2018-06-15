@@ -8,10 +8,19 @@ import java.util.List;
 
 public interface MashineDao {
 
-    boolean uploadDir(Mashine mashine, File path);
-    boolean clearDir(Mashine mashine, File path);
     boolean backupLayoutJSON(Mashine target, List<Mashine> serverList);
-    List<Mashine> pingList(List<Mashine> list);
-    List<Mashine> getAllMashines();
 
+    List<Mashine> pingList(List<Mashine> list);
+
+    List<Mashine> getAllMashines(boolean showOnline);
+
+    boolean uploadModules(Mashine target, Mashine server);
+
+    boolean uploadVVVV(Mashine target, Mashine server);
+
+    boolean uploadContent(Mashine target, Mashine server);
+
+    boolean uploadAll(Mashine target, Mashine server);
+
+    void addNewServer(Mashine server);
 }
