@@ -3,14 +3,11 @@ package expo.dao;
 
 import expo.model.Mashine;
 
-import java.io.File;
 import java.util.List;
 
 public interface MashineDao {
 
-    boolean backupLayoutJSON(Mashine target, List<Mashine> serverList);
-
-    List<Mashine> pingList(List<Mashine> list);
+    String backupLayoutJSON(Mashine target);
 
     List<Mashine> getAllMashines(boolean showOnline);
 
@@ -23,4 +20,8 @@ public interface MashineDao {
     boolean uploadAll(Mashine target, Mashine server);
 
     void addNewServer(Mashine server);
+
+    void deleteSrv(String name);
+
+    void setKinect(String name);
 }

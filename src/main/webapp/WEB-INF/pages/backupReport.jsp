@@ -21,37 +21,36 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
 </head>
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Expo</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
 <body class=".container-fluid">
 <div class="container myrow-container">
     <div class="panel panel-success">
         <div class="panel-heading">
             <h3 class="panel-title">
-                <div align="left"><b>Источник контента</b></div>
-                <div></div>
+                <div align="left"><b>Отчет по бэкапу _layout.json</b></div>
                 <div align="right"><a href="/">Назад</a></div>
             </h3>
         </div>
         <div class="panel-body">
-            <form:form id="bookRegisterForm" cssClass="form-horizontal" modelAttribute="target" method="post"
-                       action="saveTarget">
-                <div class="form-group">
-                    <div class="control-label col-xs-3"><form:label path="name">Name</form:label></div>
-                    <div class="col-xs-6">
-                        <form:input cssClass="form-control" path="name"/>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="row">
-                        <div class="col-xs-4">
-                        </div>
-                        <div class="col-xs-4">
-                            <input type="submit" id="saveTarget" class="btn btn-primary" value="Save"/>
-                        </div>
-                        <div class="col-xs-4">
-                        </div>
-                    </div>
-                </div>
-            </form:form>
+            <p>${report}</p>
         </div>
     </div>
 </div>

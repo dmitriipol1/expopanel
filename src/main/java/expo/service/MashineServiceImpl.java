@@ -23,32 +23,46 @@ public class MashineServiceImpl implements MashineService {
     }
 
     @Override
-    public List<Mashine> pingList(List<Mashine> mashinesList) {
-        return mashineDao.pingList(mashinesList);
+    public boolean uploadModules(Mashine target, String name) {
+        Mashine server = mashineDao.getAllMashines(true).stream().filter(m -> m.getName().equals(name)).findFirst().get();
+        return mashineDao.uploadModules(target, server);
     }
 
     @Override
-    public boolean uploadModules(Mashine target, Mashine server) {
-        return server.isOnline() && mashineDao.uploadModules(target, server);
+    public boolean uploadContent(Mashine target, String name) {
+        Mashine server = mashineDao.getAllMashines(true).stream().filter(m -> m.getName().equals(name)).findFirst().get();
+        return mashineDao.uploadContent(target, server);
     }
 
     @Override
-    public boolean uploadContent(Mashine target, Mashine server) {
-        return server.isOnline() && mashineDao.uploadContent(target, server);
+    public boolean uploadVVVV(Mashine target, String name) {
+        Mashine server = mashineDao.getAllMashines(true).stream().filter(m -> m.getName().equals(name)).findFirst().get();
+        return mashineDao.uploadVVVV(target, server);
     }
 
     @Override
-    public boolean uploadVVVV(Mashine target, Mashine server) {
-        return server.isOnline() && mashineDao.uploadVVVV(target, server);
-    }
-
-    @Override
-    public boolean uploadAll(Mashine target, Mashine server) {
-        return server.isOnline() && mashineDao.uploadAll(target, server);
+    public boolean uploadAll(Mashine target, String name) {
+        Mashine server = mashineDao.getAllMashines(true).stream().filter(m -> m.getName().equals(name)).findFirst().get();
+        return mashineDao.uploadAll(target, server);
     }
 
     @Override
     public void addNewServer(Mashine server) {
         mashineDao.addNewServer(server);
+    }
+
+    @Override
+    public String backup(Mashine target) {
+        return mashineDao.backupLayoutJSON(target);
+    }
+
+    @Override
+    public void deleteSrv(String name) {
+        mashineDao.deleteSrv(name);
+    }
+
+    @Override
+    public void setKinect(String name) {
+        mashineDao.setKinect(name);
     }
 }

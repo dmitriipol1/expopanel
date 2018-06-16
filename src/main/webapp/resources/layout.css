@@ -10,3 +10,11 @@
 .td-type0{
     background-color: palevioletred;
 }
+
+#online {
+    background-color: aquamarine;
+}
+
+#offline {
+    background-color: ghostwhite;
+}

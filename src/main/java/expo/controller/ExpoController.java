@@ -1,23 +1,19 @@
 package expo.controller;
 
 import expo.model.Mashine;
+import expo.service.MashineServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import expo.service.MashineServiceImpl;
-
-import java.util.List;
 
 @Controller
 public class ExpoController {
     private Mashine target = new Mashine("localhost");
     private boolean showOnlyOnline = false;
-    private List<Mashine> mashinesList;
+//    private List<Mashine> mashinesList;
 
     private final MashineServiceImpl mashineService;
 
@@ -28,19 +24,18 @@ public class ExpoController {
 
     @RequestMapping(value = {"getAllMashines", "/"})
     public ModelAndView getAllMashines(Model model) {
-        mashinesList = mashineService.getAllMashines(showOnlyOnline);
         model.addAttribute("target", target.getName());
-        return new ModelAndView("index", "mashinesList", mashinesList);
+        return new ModelAndView("index", "mashinesList", mashineService.getAllMashines(showOnlyOnline));
     }
 
     @RequestMapping("changeTarget")
-    public ModelAndView changeTarget(@ModelAttribute Mashine target) {
+    public ModelAndView changeTarget() {
         return new ModelAndView("targetForm", "target", target);
     }
 
     @RequestMapping("saveTarget")
-    public ModelAndView saveTarget(@ModelAttribute Mashine target) {
-        this.target = target;
+    public ModelAndView saveTarget(@RequestParam("name") String name) {
+        target = new Mashine(name);
         return new ModelAndView("redirect:/");
     }
 
@@ -50,10 +45,10 @@ public class ExpoController {
     }
 
     @RequestMapping("saveNewServer")
-    public ModelAndView saveNewServer(@ModelAttribute Mashine server, @RequestParam(required = false) boolean kinect) {
-        server.setKinect(kinect);
-        mashineService.addNewServer(server);
-        return new ModelAndView("redirect:/");
+    public ModelAndView saveNewServer(@RequestParam String name, @RequestParam(required = false) boolean kinect) {
+        if (mashineService.getAllMashines(false).stream().noneMatch(s -> s.getName().equals(name)))
+            mashineService.addNewServer(new Mashine(name, kinect));
+        return new ModelAndView("listSrv", "listSrv", mashineService.getAllMashines(false));
     }
 
     @RequestMapping("showOnline")
@@ -64,63 +59,50 @@ public class ExpoController {
 
     @RequestMapping("uploadModules")
     public ModelAndView uploadModules(@RequestParam String name) {
-        Mashine server = mashinesList.stream().filter(m -> m.getName().equals(name)).findFirst().get();
-        mashineService.uploadModules(target, server);
+        mashineService.uploadModules(target, name);
         return new ModelAndView("redirect:/");
     }
 
     @RequestMapping("uploadContent")
     public ModelAndView uploadContent(@RequestParam String name) {
-        Mashine server = mashinesList.stream().filter(m -> m.getName().equals(name)).findFirst().get();
-        mashineService.uploadContent(target, server);
+        mashineService.uploadContent(target, name);
         return new ModelAndView("redirect:/");
     }
 
     @RequestMapping("uploadVVVV")
     public ModelAndView uploadVVVV(@RequestParam String name) {
-        Mashine server = mashinesList.stream().filter(m -> m.getName().equals(name)).findFirst().get();
-        mashineService.uploadVVVV(target, server);
+        mashineService.uploadVVVV(target, name);
         return new ModelAndView("redirect:/");
     }
 
     @RequestMapping("uploadAll")
     public ModelAndView uploadAll(@RequestParam String name) {
-        Mashine server = mashinesList.stream().filter(m -> m.getName().equals(name)).findFirst().get();
-        mashineService.uploadAll(target, server);
+        mashineService.uploadAll(target, name);
         return new ModelAndView("redirect:/");
     }
-//
-//    @RequestMapping("searchBook")
-//    public ModelAndView searchBook(@RequestParam("searchName") String searchName) {
-//        List<Book> booksList = bookService.getAllBooks(searchName);
-//        return new ModelAndView("index", "booksList", booksList);
-//    }
-//
-//    @RequestMapping("readBook")
-//    public ModelAndView readBook(@RequestParam long id, @ModelAttribute Book book) {
-//        book = bookService.getBook(id);
-//        book.setReadAlready(!book.isReadAlready());
-//        bookService.updateBook(book);
-//        return new ModelAndView("redirect:/");
-//    }
-//
-//    @RequestMapping("createBook")
-//    public ModelAndView createBook(@ModelAttribute Book book) {
-//        return new ModelAndView("bookForm", "bookObject", book);
-//    }
-//
-//    @RequestMapping("editBook")
-//    public ModelAndView editBook(Model expo.model, @RequestParam long id, @ModelAttribute Book item) {
-//        item = bookService.getBook(id);
-//        expo.model.addAttribute("description", item.getDescription());
-//        return new ModelAndView("bookForm", "bookObject", item);
-//    }
-//
 
-//
-//    @RequestMapping("deleteBook")
-//    public ModelAndView deleteBook(@RequestParam long id) {
-//        bookService.deleteBook(id);
-//        return new ModelAndView("redirect:/");
-//    }
+    @RequestMapping("backup")
+    public ModelAndView backup() {
+        String report = mashineService.backup(target);
+        String viewname;
+        viewname = report.length() > 0 ? "backupReport" : "/";
+        return new ModelAndView(viewname, "report", report);
+    }
+
+    @RequestMapping("listSrv")
+    public ModelAndView listSrv() {
+        return new ModelAndView("listSrv", "listSrv", mashineService.getAllMashines(false));
+    }
+
+    @RequestMapping("deleteSrv")
+    public ModelAndView deleteSrv(@RequestParam("name") String name) {
+        mashineService.deleteSrv(name);
+        return new ModelAndView("listSrv", "listSrv", mashineService.getAllMashines(false));
+    }
+
+    @RequestMapping("setKinect")
+    public ModelAndView setKinect(@RequestParam("name") String name) {
+        mashineService.setKinect(name);
+        return new ModelAndView("listSrv", "listSrv", mashineService.getAllMashines(false));
+    }
 }

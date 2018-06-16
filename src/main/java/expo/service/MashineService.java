@@ -8,15 +8,19 @@ public interface MashineService {
 
     public List<Mashine> getAllMashines(boolean showOnline);
 
-    List<Mashine> pingList(List<Mashine> mashinesList);
+    boolean uploadModules(Mashine target, String name);
 
-    boolean uploadModules(Mashine target, Mashine server);
+    boolean uploadContent(Mashine target, String name);
 
-    boolean uploadContent(Mashine target, Mashine server);
+    boolean uploadVVVV(Mashine target, String name);
 
-    boolean uploadVVVV(Mashine target, Mashine server);
-
-    boolean uploadAll(Mashine target, Mashine server);
+    boolean uploadAll(Mashine target, String name);
 
     void addNewServer(Mashine server);
+
+    String backup(Mashine target);
+
+    void deleteSrv(String name);
+
+    void setKinect(String name);
 }

@@ -69,7 +69,4 @@ public class Mashine {
         return isOnline;
     }
 
-    public void setName(String target) {
-        name = target;
-    }
 }
