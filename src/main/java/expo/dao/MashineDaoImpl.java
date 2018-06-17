@@ -95,7 +95,7 @@ public class MashineDaoImpl implements MashineDao {
 
     private void pingList() {
         service.submit(() -> {
-            MashineDaoImpl.mashines.parallelStream().forEach(m -> {
+            mashines.parallelStream().forEach(m -> {
                 try {
                     InetAddress ip = InetAddress.getByName(m.getName());
                     m.setOnline(ip.isReachable(10));
@@ -112,115 +112,128 @@ public class MashineDaoImpl implements MashineDao {
         });
     }
 
-    public boolean uploadModules(Mashine target, Mashine server) {
-        if (new File("//" + server.getName() + dest).exists()) {
+    public boolean uploadModules(Mashine sourceSrv, Mashine destinationServer) {
+        if (new File("//" + destinationServer.getName() + dest).exists()) {
             service.submit(() -> {
                 try {
-                    File targ = new File("//" + target.getName() + "/Expo/_hronomapper/modules");
-                    File destin = new File("//" + server.getName() + dest + "modules");
-                    if (targ.exists())
+                    //modules copy
+                    File source = new File("//" + sourceSrv.getName() + "/Expo/_hronomapper/modules");
+                    File destin = new File("//" + destinationServer.getName() + dest + "modules");
+                    copyDir(source, destin);
+
+                    // slave copy
+                    String fileName;
+                    if (destinationServer.isKinect)
+                        fileName = "_slave_kinect.v4p";
+                    else
+                        fileName = "_slave.v4p";
+                    source = new File("//" + sourceSrv.getName() + "/Expo/_hronomapper/" + fileName);
+                    destin = new File("//" + destinationServer.getName() + dest + fileName);
+                    if (source.exists()) {
                         if (!destin.exists())
-                            if (destin.getParentFile().mkdirs()) {
-                                FileUtils.copyDirectory(targ, destin, false);
-                                String fileName;
-                                if (server.isKinect)
-                                    fileName = "_slave_kinect.v4p";
-                                else
-                                    fileName = "_slave.v4p";
-                                targ = new File("//" + target.getName() + "/Expo/_hronomapper/" + fileName);
-                                destin = new File("//" + server.getName() + dest + fileName);
-                                if (targ.exists()) {
-                                    if (!destin.exists())
-                                        if (destin.createNewFile())
-                                            FileUtils.copyFile(targ, destin);
-                                } else logger.severe(targ + " NOT Exist");
-                            } else
-                                throw new IOException("cannot create Dirs");
+                            if (!destin.createNewFile())
+                                logger.severe("can`t create - " + source);
+                        FileUtils.copyFile(source, destin);
+                    } else logger.severe(source + " NOT Exist");
+
                 } catch (IOException e) {
                     logger.severe(e.getMessage());
-                    server.setModulesLoaded(0);
+                    destinationServer.setModulesLoaded(0);
                 }
-                logger.info("Upload Modules to " + server.getName() + " - OK");
-                server.setModulesLoaded(2);
+                logger.info("Upload Modules to " + destinationServer.getName() + " - OK");
+                destinationServer.setModulesLoaded(2);
             });
-            server.setModulesLoaded(1);
+            destinationServer.setModulesLoaded(1);
             return true;
-        } else return false;
+        } else {
+            logger.severe(destinationServer.getName() + " doesnt have Expo dir");
+            destinationServer.setModulesLoaded(0);
+            return false;
+        }
     }
 
     @Override
-    public boolean uploadVVVV(Mashine target, Mashine server) {
-        if (new File("//" + server.getName() + dest).exists()) {
+    public boolean uploadVVVV(Mashine sourceSrv, Mashine destinationServer) {
+        if (new File("//" + destinationServer.getName() + dest).exists()) {
             service.submit(() -> {
                 try {
-                    File targ = new File("//" + target.getName() + "/Expo/vvvv");
-                    File destin = new File("//" + server.getName() + dest + "vvvv");
-                    copyDir(targ, destin);
+                    File source = new File("//" + sourceSrv.getName() + "/Expo/vvvv");
+                    File destination = new File("//" + destinationServer.getName() + dest + "vvvv");
+                    copyDir(source, destination);
                 } catch (IOException e) {
                     logger.warning(e.getMessage());
-                    server.setVVVVLoaded(0);
+                    destinationServer.setVVVVLoaded(0);
                 }
-                logger.info("Upload VVVV to " + server.getName() + " - OK");
-                server.setVVVVLoaded(2);
+                logger.info("Upload VVVV to " + destinationServer.getName() + " - OK");
+                destinationServer.setVVVVLoaded(2);
 
             });
-            server.setVVVVLoaded(1);
+            destinationServer.setVVVVLoaded(1);
             return true;
-        } else return false;
+        } else {
+            logger.severe(destinationServer.getName() + " doesnt have Expo dir");
+            destinationServer.setVVVVLoaded(0);
+            return false;
+        }
     }
 
     @Override
-    public boolean uploadContent(Mashine target, Mashine server) {
-        if (new File("//" + server.getName() + dest).exists()) {
+    public boolean uploadContent(Mashine sourceSrv, Mashine destinationServer) {
+        if (new File("//" + destinationServer.getName() + dest).exists()) {
             service.submit(() -> {
                 try {
-                    File targ = new File("//" + target.getName() + "/Expo/content/" + server.getName());
-                    File destin = new File("//" + server.getName() + dest + "content");
-                    copyDir(targ, destin);
+                    File source = new File("//" + sourceSrv.getName() + "/Expo/content/" + destinationServer.getName());
+                    File destin = new File("//" + destinationServer.getName() + dest + "content");
+                    copyDir(source, destin);
                 } catch (IOException e) {
                     logger.warning(e.getMessage());
-                    server.setContentLoaded(0);
+                    destinationServer.setContentLoaded(0);
                 }
-                logger.info("Upload Content to " + server.getName() + "  - OK");
-                server.setContentLoaded(2);
+                logger.info("Upload Content to " + destinationServer.getName() + "  - OK");
+                destinationServer.setContentLoaded(2);
             });
-            server.setContentLoaded(1);
+            destinationServer.setContentLoaded(1);
             return true;
-        } else return false;
+        } else {
+            logger.severe(destinationServer.getName() + " doesnt have Expo dir");
+            destinationServer.setContentLoaded(0);
+            return false;
+        }
     }
 
-    private void copyDir(File targ, File destin) throws IOException {
-        if (targ.exists())
-            if (!destin.exists())
-                if (destin.getParentFile().mkdirs()) {
-                    FileUtils.copyDirectory(targ, destin, false);
-                } else
+    private void copyDir(File source, File destination) throws IOException {
+        if (source.exists()) {
+            if (!destination.exists()) {
+                if (!destination.getParentFile().mkdirs())
                     throw new IOException("cannot create Dirs");
+            } else FileUtils.cleanDirectory(destination);
+            FileUtils.copyDirectory(source, destination, false);
+        }
     }
 
     @Override
-    public boolean uploadAll(Mashine target, Mashine server) {
-        return uploadModules(target, server) && uploadVVVV(target, server) && uploadContent(target, server);
+    public boolean uploadAll(Mashine sourceSrv, Mashine destinationServer) {
+        return uploadModules(sourceSrv, destinationServer) && uploadVVVV(sourceSrv, destinationServer) && uploadContent(sourceSrv, destinationServer);
     }
 
     @Override
-    public void addNewServer(Mashine server) {
+    public void addNewServer(Mashine newServer) {
         try {
-            server.setOnline(InetAddress.getByName(server.getName()).isReachable(10));
+            newServer.setOnline(InetAddress.getByName(newServer.getName()).isReachable(10));
         } catch (IOException e) {
             logger.info(e.getMessage());
         }
-        mashines.add(server);
+        mashines.add(newServer);
     }
 
     @Override
-    public void deleteSrv(String name) {
-        mashines.removeIf(m -> m.getName().equals(name));
+    public void deleteSrv(String srvName) {
+        mashines.removeIf(m -> m.getName().equals(srvName));
     }
 
     @Override
-    public void setKinect(String name) {
-        Mashine srv = mashines.stream().filter(s -> s.getName().equals(name)).findFirst().get();
+    public void setKinect(String srvName) {
+        Mashine srv = mashines.stream().filter(s -> s.getName().equals(srvName)).findFirst().get();
         srv.setKinect(!srv.isKinect);
     }
 }
