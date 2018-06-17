@@ -23,27 +23,27 @@ public class MashineServiceImpl implements MashineService {
     }
 
     @Override
-    public boolean uploadModules(Mashine target, String name) {
-        Mashine server = mashineDao.getAllMashines(true).stream().filter(m -> m.getName().equals(name)).findFirst().get();
-        return mashineDao.uploadModules(target, server);
+    public boolean uploadModules(Mashine source, String name) {
+        Mashine server = mashineDao.getAllMashines(false).stream().filter(m -> m.getName().equals(name)).findFirst().get();
+        return mashineDao.uploadModules(source, server);
     }
 
     @Override
-    public boolean uploadContent(Mashine target, String name) {
-        Mashine server = mashineDao.getAllMashines(true).stream().filter(m -> m.getName().equals(name)).findFirst().get();
-        return mashineDao.uploadContent(target, server);
+    public boolean uploadContent(Mashine source, String name) {
+        Mashine server = mashineDao.getAllMashines(false).stream().filter(m -> m.getName().equals(name)).findFirst().get();
+        return mashineDao.uploadContent(source, server);
     }
 
     @Override
-    public boolean uploadVVVV(Mashine target, String name) {
-        Mashine server = mashineDao.getAllMashines(true).stream().filter(m -> m.getName().equals(name)).findFirst().get();
-        return mashineDao.uploadVVVV(target, server);
+    public boolean uploadVVVV(Mashine source, String name) {
+        Mashine server = mashineDao.getAllMashines(false).stream().filter(m -> m.getName().equals(name)).findFirst().get();
+        return mashineDao.uploadVVVV(source, server);
     }
 
     @Override
-    public boolean uploadAll(Mashine target, String name) {
+    public boolean uploadAll(Mashine source, String name) {
         Mashine server = mashineDao.getAllMashines(true).stream().filter(m -> m.getName().equals(name)).findFirst().get();
-        return mashineDao.uploadAll(target, server);
+        return mashineDao.uploadAll(source, server);
     }
 
     @Override
