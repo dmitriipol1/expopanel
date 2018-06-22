@@ -10,6 +10,7 @@ import java.net.UnknownHostException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,7 +29,7 @@ public class MashineDaoImpl implements MashineDao {
     {
         Scanner scanner = null;
         try {
-            scanner = new Scanner(new File("e://serverList.txt"));
+            scanner = new Scanner(new File("D://serverList.txt"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -75,6 +76,8 @@ public class MashineDaoImpl implements MashineDao {
                 logger.warning("no JSON in " + server.getName());
             }
         });
+        if (stringBuilder.length()<1)
+            stringBuilder.append("нет ножек - нет мультиков<br> все оффлайн");
         return stringBuilder.toString();
     }
 
@@ -117,7 +120,7 @@ public class MashineDaoImpl implements MashineDao {
             service.submit(() -> {
                 try {
                     //modules copy
-                    File source = new File("//" + sourceSrv.getName() + "/Expo/_hronomapper/modules");
+                    File source = new File("//" + sourceSrv.getName() + "/ExpoData/_hronomapper/modules");
                     File destin = new File("//" + destinationServer.getName() + dest + "modules");
                     copyDir(source, destin);
 
@@ -127,7 +130,7 @@ public class MashineDaoImpl implements MashineDao {
                         fileName = "_slave_kinect.v4p";
                     else
                         fileName = "_slave.v4p";
-                    source = new File("//" + sourceSrv.getName() + "/Expo/_hronomapper/" + fileName);
+                    source = new File("//" + sourceSrv.getName() + "/ExpoData/_hronomapper/" + fileName);
                     destin = new File("//" + destinationServer.getName() + dest + fileName);
                     if (source.exists()) {
                         if (!destin.exists())
@@ -157,7 +160,7 @@ public class MashineDaoImpl implements MashineDao {
         if (new File("//" + destinationServer.getName() + dest).exists()) {
             service.submit(() -> {
                 try {
-                    File source = new File("//" + sourceSrv.getName() + "/Expo/vvvv");
+                    File source = new File("//" + sourceSrv.getName() + "/ExpoData/vvvv");
                     File destination = new File("//" + destinationServer.getName() + dest + "vvvv");
                     copyDir(source, destination);
                 } catch (IOException e) {
@@ -182,7 +185,7 @@ public class MashineDaoImpl implements MashineDao {
         if (new File("//" + destinationServer.getName() + dest).exists()) {
             service.submit(() -> {
                 try {
-                    File source = new File("//" + sourceSrv.getName() + "/Expo/content/" + destinationServer.getName());
+                    File source = new File("//" + sourceSrv.getName() + "/ExpoData/content/" + destinationServer.getName());
                     File destin = new File("//" + destinationServer.getName() + dest + "content");
                     copyDir(source, destin);
                 } catch (IOException e) {
@@ -233,7 +236,7 @@ public class MashineDaoImpl implements MashineDao {
 
     @Override
     public void setKinect(String srvName) {
-        Mashine srv = mashines.stream().filter(s -> s.getName().equals(srvName)).findFirst().get();
-        srv.setKinect(!srv.isKinect);
+        Mashine srv = mashines.stream().filter(s -> s.getName().equals(srvName)).findFirst().orElse(null);
+        srv.setKinect(!Objects.requireNonNull(srv).isKinect);
     }
 }
