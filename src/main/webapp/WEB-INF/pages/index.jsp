@@ -46,6 +46,8 @@
                 <li class="active"><a href="showOnline">Show all/online</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
+                <li><a href="kill">Kill crazz</a></li>
+
                 <li><a href="changeTarget">Change source(${target})</a></li>
                 <li><a href="backup">Бэкап layout(${target}/ExpoBackup)</a></li>
                 <li><a href="listSrv">Список серверов</a></li>

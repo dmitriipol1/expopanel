@@ -46,7 +46,6 @@ public class ExpoController {
 
     @RequestMapping("saveNewServer")
     public ModelAndView saveNewServer(@RequestParam String name, @RequestParam(required = false) boolean kinect) {
-        if (mashineService.getAllMashines(false).stream().noneMatch(s -> s.getName().equals(name)))
             mashineService.addNewServer(new Mashine(name, kinect));
         return new ModelAndView("listSrv", "listSrv", mashineService.getAllMashines(false));
     }
@@ -104,5 +103,11 @@ public class ExpoController {
     public ModelAndView setKinect(@RequestParam("name") String name) {
         mashineService.setKinect(name);
         return new ModelAndView("listSrv", "listSrv", mashineService.getAllMashines(false));
+    }
+
+    @RequestMapping("kill")
+    public ModelAndView kill() {
+        mashineService.kill();
+        return new ModelAndView("redirect:/");
     }
 }

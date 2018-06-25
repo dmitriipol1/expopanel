@@ -38,7 +38,7 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="addNewServer">add server</a></li>
+                <li><a href="/">Назад</a></li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
@@ -49,7 +49,7 @@
         <div class="panel-heading">
             <h3 class="panel-title">
                 <div align="left"><b>Список серверов</b></div>
-                <div align="right"><a href="/">Назад</a></div>
+                <div align="right"><a href="addNewServer">add server</a></div>
             </h3>
         </div>
         <div class="panel-body">

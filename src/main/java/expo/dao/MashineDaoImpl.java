@@ -76,7 +76,7 @@ public class MashineDaoImpl implements MashineDao {
                 logger.warning("no JSON in " + server.getName());
             }
         });
-        if (stringBuilder.length()<1)
+        if (stringBuilder.length() < 1)
             stringBuilder.append("нет ножек - нет мультиков<br> все оффлайн");
         return stringBuilder.toString();
     }
@@ -221,12 +221,14 @@ public class MashineDaoImpl implements MashineDao {
 
     @Override
     public void addNewServer(Mashine newServer) {
-        try {
-            newServer.setOnline(InetAddress.getByName(newServer.getName()).isReachable(10));
-        } catch (IOException e) {
-            logger.info(e.getMessage());
+        if (mashines.stream().noneMatch(s -> s.getName().equals(newServer.getName()))) {
+            try {
+                newServer.setOnline(InetAddress.getByName(newServer.getName()).isReachable(10));
+            } catch (IOException e) {
+                logger.info(e.getMessage());
+            }
+            mashines.add(newServer);
         }
-        mashines.add(newServer);
     }
 
     @Override
