@@ -6,14 +6,11 @@ import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.nio.channels.FileChannel;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -23,7 +20,7 @@ import java.util.stream.Collectors;
 public class MashineDaoImpl implements MashineDao {
     private Logger logger = Logger.getLogger(MashineDaoImpl.class.getName());
     private final String dest = "/Expo/";
-    private static List<Mashine> mashines = new ArrayList<>();
+    private static List<Mashine> mashines = new CopyOnWriteArrayList<>();
     private ExecutorService service = Executors.newCachedThreadPool();
 
     {
@@ -98,26 +95,23 @@ public class MashineDaoImpl implements MashineDao {
 
     private void pingList() {
         service.submit(() -> {
-            mashines.parallelStream().forEach(m -> {
+            while (true) {
+                mashines.parallelStream().forEach(m -> {
+                    logger.info("pinging..." + m.getName());
+                    m.setOnline(new File("//" + m.getName() + "/Expo").exists());
+                });
                 try {
-                    InetAddress ip = InetAddress.getByName(m.getName());
-                    m.setOnline(ip.isReachable(10));
-                } catch (UnknownHostException ignored) {
-                } catch (IOException e) {
-                    logger.warning(e.getMessage());
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    logger.info(e.getMessage());
                 }
-            });
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                logger.info(e.getMessage());
             }
         });
     }
 
     public boolean uploadModules(Mashine sourceSrv, Mashine destinationServer) {
         if (new File("//" + destinationServer.getName() + dest).exists()) {
-            service.submit(() -> {
+            Future call = service.submit(() -> {
                 try {
                     //modules copy
                     File source = new File("//" + sourceSrv.getName() + "/ExpoData/_hronomapper/modules");
@@ -142,17 +136,24 @@ public class MashineDaoImpl implements MashineDao {
                 } catch (IOException e) {
                     logger.severe(e.getMessage());
                     destinationServer.setModulesLoaded(0);
+                    return false;
                 }
                 logger.info("Upload Modules to " + destinationServer.getName() + " - OK");
                 destinationServer.setModulesLoaded(2);
+                return true;
             });
             destinationServer.setModulesLoaded(1);
-            return true;
+            try {
+                return (boolean) call.get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
         } else {
             logger.severe(destinationServer.getName() + " doesnt have Expo dir");
             destinationServer.setModulesLoaded(0);
             return false;
         }
+        return false;
     }
 
     @Override
@@ -208,10 +209,10 @@ public class MashineDaoImpl implements MashineDao {
         if (source.exists()) {
             if (!destination.exists()) {
                 if (!destination.getParentFile().mkdirs())
-                    throw new IOException("cannot create Dirs");
+                    throw new IOException("cannot create Dirs in " + destination);
             } else FileUtils.cleanDirectory(destination);
             FileUtils.copyDirectory(source, destination, false);
-        }
+        } else throw new IOException("no files in SOURCE");
     }
 
     @Override
@@ -223,7 +224,7 @@ public class MashineDaoImpl implements MashineDao {
     public void addNewServer(Mashine newServer) {
         if (mashines.stream().noneMatch(s -> s.getName().equals(newServer.getName()))) {
             try {
-                newServer.setOnline(InetAddress.getByName(newServer.getName()).isReachable(10));
+                newServer.setOnline(InetAddress.getByName(newServer.getName()).isReachable(100));
             } catch (IOException e) {
                 logger.info(e.getMessage());
             }
