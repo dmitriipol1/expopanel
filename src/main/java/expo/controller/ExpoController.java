@@ -11,7 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class ExpoController {
-    private Mashine target = new Mashine("localhost");
+    private Mashine from = new Mashine("localhost");
     private boolean showOnlyOnline = false;
 //    private List<Mashine> mashinesList;
 
@@ -24,18 +24,18 @@ public class ExpoController {
 
     @RequestMapping(value = {"getAllMashines", "/"})
     public ModelAndView getAllMashines(Model model) {
-        model.addAttribute("target", target.getName());
+        model.addAttribute("target", from.getName());
         return new ModelAndView("index", "mashinesList", mashineService.getAllMashines(showOnlyOnline));
     }
 
     @RequestMapping("changeTarget")
     public ModelAndView changeTarget() {
-        return new ModelAndView("targetForm", "target", target);
+        return new ModelAndView("targetForm", "target", from);
     }
 
     @RequestMapping("saveTarget")
     public ModelAndView saveTarget(@RequestParam("name") String name) {
-        target = new Mashine(name);
+        from = new Mashine(name);
         return new ModelAndView("redirect:/");
     }
 
@@ -58,31 +58,31 @@ public class ExpoController {
 
     @RequestMapping("uploadModules")
     public ModelAndView uploadModules(@RequestParam String name) {
-        mashineService.uploadModules(target, name);
+        mashineService.uploadModules(from, name);
         return new ModelAndView("redirect:/");
     }
 
     @RequestMapping("uploadContent")
     public ModelAndView uploadContent(@RequestParam String name) {
-        mashineService.uploadContent(target, name);
+        mashineService.uploadContent(from, name);
         return new ModelAndView("redirect:/");
     }
 
     @RequestMapping("uploadVVVV")
     public ModelAndView uploadVVVV(@RequestParam String name) {
-        mashineService.uploadVVVV(target, name);
+        mashineService.uploadVVVV(from, name);
         return new ModelAndView("redirect:/");
     }
 
     @RequestMapping("uploadAll")
     public ModelAndView uploadAll(@RequestParam String name) {
-        mashineService.uploadAll(target, name);
+        mashineService.uploadAll(from, name);
         return new ModelAndView("redirect:/");
     }
 
     @RequestMapping("backup")
     public ModelAndView backup() {
-        String report = mashineService.backup(target);
+        String report = mashineService.backup(from);
         String viewname;
         viewname = report.length() > 0 ? "backupReport" : "/";
         return new ModelAndView(viewname, "report", report);

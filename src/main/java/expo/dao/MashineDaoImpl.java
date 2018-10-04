@@ -26,7 +26,7 @@ public class MashineDaoImpl implements MashineDao {
     {
         Scanner scanner = null;
         try {
-            scanner = new Scanner(new File("D://serverList.txt"));
+            scanner = new Scanner(new File("D://srv.txt"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -98,7 +98,9 @@ public class MashineDaoImpl implements MashineDao {
             while (true) {
                 mashines.parallelStream().forEach(m -> {
                     logger.info("pinging..." + m.getName());
-                    m.setOnline(new File("//" + m.getName() + "/Expo").exists());
+                    boolean isOnline = new File("//" + m.getName() + "/Expo").exists();
+                    if (m.isOnline() != isOnline)
+                        m.setOnline(isOnline);
                 });
                 try {
                     Thread.sleep(10000);
@@ -149,7 +151,7 @@ public class MashineDaoImpl implements MashineDao {
                 e.printStackTrace();
             }
         } else {
-            logger.severe(destinationServer.getName() + " doesnt have Expo dir");
+            logger.severe("Dest " + destinationServer.getName() + " doesnt have Expo dir");
             destinationServer.setModulesLoaded(0);
             return false;
         }
@@ -208,11 +210,11 @@ public class MashineDaoImpl implements MashineDao {
     private void copyDir(File source, File destination) throws IOException {
         if (source.exists()) {
             if (!destination.exists()) {
-                if (!destination.getParentFile().mkdirs())
+                if (!destination.mkdirs())
                     throw new IOException("cannot create Dirs in " + destination);
             } else FileUtils.cleanDirectory(destination);
             FileUtils.copyDirectory(source, destination, false);
-        } else throw new IOException("no files in SOURCE");
+        } else throw new IOException("no files in SOURCE " + source);
     }
 
     @Override

@@ -48,9 +48,9 @@
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="kill">Kill crazz</a></li>
 
-                <li><a href="changeTarget">Change source(${target})</a></li>
+                <li><a href="changeTarget">Change source(${target}/ExpoData/)</a></li>
                 <li><a href="backup">Бэкап layout(${target}/ExpoBackup)</a></li>
-                <li><a href="listSrv">Список серверов</a></li>
+                <li><a href="listSrv">Список серверов D://srv.txt</a></li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
