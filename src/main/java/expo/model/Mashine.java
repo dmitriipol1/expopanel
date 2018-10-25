@@ -7,6 +7,7 @@ public class Mashine {
     private int isContentLoaded;
     private int isVVVVLoaded;
     private int isModulesLoaded;
+    private String ip;
 
     public int isContentLoaded() {
         return isContentLoaded;
@@ -43,6 +44,7 @@ public class Mashine {
         isContentLoaded = 0;
         isModulesLoaded = 0;
         isVVVVLoaded = 0;
+        ip = null;
     }
 
     public Mashine() {
@@ -69,4 +71,11 @@ public class Mashine {
         return isOnline;
     }
 
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
 }

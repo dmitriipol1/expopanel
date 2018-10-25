@@ -80,4 +80,12 @@ public class MashineServiceImpl implements MashineService {
             e.printStackTrace();
         }
     }
+
+    public boolean getIsPinging() {
+        return mashineDao.getIsPinging();
+    }
+
+    public void ping() {
+        mashineDao.pingChange();
+    }
 }

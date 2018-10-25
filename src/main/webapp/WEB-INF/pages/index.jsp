@@ -18,12 +18,12 @@
     <title>EXPO</title>
     <!-- Bootstrap CSS -->
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="http://cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="resources/bootstrap.min.css">
+    <link rel="stylesheet" href="resources/jquery.dataTables.min.css">
     <link href="resources/layout.css" rel="stylesheet" type="text/css"/>
 
-    <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
-    <script src="http://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+    <script src="resources/jquery-2.1.1.js"></script>
+    <script src="resources/jquery.dataTables.min.js"></script>
 </head>
 
 <nav class="navbar navbar-default" role="navigation">
@@ -46,7 +46,7 @@
                 <li class="active"><a href="showOnline">Show all/online</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="kill">Kill crazz</a></li>
+                <li><a href="ping">Ping = ${isPinging}</a></li>
 
                 <li><a href="changeTarget">Change source(${target}/ExpoData/)</a></li>
                 <li><a href="backup">Бэкап layout(${target}/ExpoBackup)</a></li>
@@ -79,7 +79,7 @@
                     <c:forEach items="${mashinesList}" var="server">
                         <tr>
                             <td id="${server.online==true? "online":"offline"}">
-                                <a href="file://////${server.name}/expo">${server.name}</a>${server.kinect==true? " Kinect":""}
+                                <a href="file://////${server.name}/expo">${server.name} (${server.ip})</a>${server.kinect==true? " Kinect":""}
                             </td>
                             <td class="td-type${server.isModulesLoaded()}">
                                 <a href="uploadModules?name=<c:out value='${server.name}'/>">${server.online==true? "Upload Modules":""}</a>
@@ -91,7 +91,7 @@
                                 <a href="uploadContent?name=<c:out value='${server.name}'/>">${server.online==true? "Upload Content":""}</a>
                             </td>
                             <td>
-                                <a href="uploadAll?name=<c:out value='${server.name}'/>">${server.online==true? "Upload All":""}</a>
+                                <a href="uploadAll?name=<c:out value='${server.name}'/>">${server.online==true? "Upload M&C":""}</a>
                             </td>
                         </tr>
                     </c:forEach>
@@ -111,9 +111,9 @@
 </script>
 
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js"></script>
+<script src="resources/jquery.min.js"></script>
+<script src="resources/bootstrap.min.js"></script>
+<script src="resources/jquery.dataTables.min.js"></script>
+<script src="resources/dataTables.bootstrap.min.js"></script>
 </body>
 </html>

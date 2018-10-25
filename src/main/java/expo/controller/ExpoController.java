@@ -25,6 +25,7 @@ public class ExpoController {
     @RequestMapping(value = {"getAllMashines", "/"})
     public ModelAndView getAllMashines(Model model) {
         model.addAttribute("target", from.getName());
+        model.addAttribute("isPinging", mashineService.getIsPinging());
         return new ModelAndView("index", "mashinesList", mashineService.getAllMashines(showOnlyOnline));
     }
 
@@ -108,6 +109,12 @@ public class ExpoController {
     @RequestMapping("kill")
     public ModelAndView kill() {
         mashineService.kill();
+        return new ModelAndView("redirect:/");
+    }
+
+    @RequestMapping("ping")
+    public ModelAndView ping() {
+        mashineService.ping();
         return new ModelAndView("redirect:/");
     }
 }
